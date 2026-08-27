@@ -9,7 +9,7 @@ import { getPropsForInstance } from './getPropsForInstance.js'
 import { getSourceForInstance } from './getSourceForInstance.js'
 import { getUrl } from './getUrl.js'
 import { getVueInstancesForElement } from './getVueInstancesForElement.js'
-import { vkIcon } from './vkIcon.js'
+import { hkIcon } from './hkIcon.js'
 
 export const State = /** @type {const} */ ({
   IDLE: 'IDLE',
@@ -139,7 +139,7 @@ function postOpenToParent({ editor, pathToSource, url, trigger, event, element, 
   }
 }
 
-const ICON_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(vkIcon)
+const ICON_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(hkIcon)
 
 export const HeliosKanbanCompanion = {
   name: 'HeliosKanbanCompanion',
@@ -487,7 +487,7 @@ export const HeliosKanbanCompanion = {
             h('img', {
               attrs: {
                 src: ICON_DATA_URI,
-                alt: 'VK Icon',
+                alt: 'HK Icon',
               },
               style: {
                 width: '32px',
