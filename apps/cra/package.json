@@ -36,6 +36,6 @@
     ]
   },
   "devDependencies": {
-    "react-helios-kanban-companion": "workspace:^0.0.1"
+    "react-helios-kanban-companion": "workspace:^0.1.0"
   }
 }
