@@ -15,6 +15,26 @@ Forked from [click-to-component](https://github.com/ericclemmons/click-to-compon
 
 Both packages ship unbuilt ESM source and are tree-shaken out of production builds.
 
+## How it works
+
+The companion renders nothing visible until the parent window opts in. It talks to the host page over `postMessage`, using envelopes shaped as `{ source: 'click-to-component', version: 1, type, ... }`:
+
+**Child → parent**
+
+- `ready` — sent once when the companion mounts, so the host knows the iframe supports source locating.
+- `open-in-editor` — sent when the user Alt+Clicks an element (or clicks the floating button). The payload contains:
+  - `selected` — the chosen component: `{ name, pathToSource, url, editor, props, source: { fileName, lineNumber, columnNumber } }`
+  - `components` — every component in the clicked element's owner chain, same shape as `selected`
+  - `trigger` — `'alt-key'` or `'button'`
+  - `coords` — click position `{ x, y }`
+  - `clickedElement` — info about the raw DOM node: `{ tag, id, className, role, dataset }`
+
+**Parent → child**
+
+- `enable-button` — shows the companion's floating button inside the iframe, as an alternative to Alt+Click.
+
+See [`parent-example.html`](./parent-example.html) for a minimal host-side implementation.
+
 ## Repository layout
 
 ```
