@@ -8,19 +8,15 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  contents: write # push the changeset-release/main branch and tags
-  pull-requests: write # open the "Version Packages" PR
+  contents: write # push the version tags created by `changeset publish`
 
 jobs:
   release:
-    name: Release
+    name: Build & Publish
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-        with:
-          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
-          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:
@@ -31,21 +27,16 @@ jobs:
         with:
           node-version: lts/*
           cache: pnpm
+          registry-url: https://registry.npmjs.org
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # Bump versions AND refresh pnpm-lock.yaml, otherwise the version PR
-          # fails CI on `pnpm install --frozen-lockfile`. Must be a single
-          # command — the action does not run this through a shell, so `&&`
-          # would be passed to the CLI as arguments (and silently ignored).
-          version: pnpm run version-packages
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm release
+      # `pnpm release` runs `prerelease` (build) first, then `changeset publish`.
+      # Publishing is idempotent: only versions missing from npm are published,
+      # so pushes without a version bump are a no-op.
+      - name: Build & Publish to npm
+        run: pnpm release
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
