@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "checkJs": true,
+    "lib": ["ES2017", "DOM"],
+    "maxNodeModuleJsDepth": 0,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitThis": true
+  }
+}

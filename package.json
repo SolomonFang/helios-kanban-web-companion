@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "turbo run build --filter=*-helios-kanban-companion",
+    "env": "env",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint --filter=*-helios-kanban-companion",
+    "prerelease": "pnpm run build",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.23.0",
+    "eslint": "8.13.0",
+    "turbo": "^1.2.16"
+  }
+}
