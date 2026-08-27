@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "vue-helios-kanban-companion",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Add point-and-click edit functionality to Vue 2 apps, when used with Helios Kanban.",
   "exports": {
     "types": "./src/types.d.ts",

@@ -1,5 +1,11 @@
 # vue-helios-kanban-companion
 
+## 1.0.0
+
+### Major Changes
+
+- test update
+
 ## 0.1.0
 
 ### Minor Changes
