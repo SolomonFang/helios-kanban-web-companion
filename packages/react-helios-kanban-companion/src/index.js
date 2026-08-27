@@ -1,4 +1,22 @@
-import { HeliosKanbanCompanion as Component } from './HeliosKanbanCompanion.js'
+import * as React from 'react'
 
-export const HeliosKanbanCompanion =
-  process.env.NODE_ENV === 'development' ? Component : () => null
+let Component = () => null
+
+if (process.env.NODE_ENV === 'development') {
+  const LazyComponent = React.lazy(() =>
+    import('./HeliosKanbanCompanion.js').then((module) => ({
+      default: /** @type {React.ComponentType} */ (
+        module.HeliosKanbanCompanion
+      ),
+    }))
+  )
+
+  Component = () =>
+    React.createElement(
+      React.Suspense,
+      { fallback: null },
+      React.createElement(LazyComponent)
+    )
+}
+
+export const HeliosKanbanCompanion = Component
