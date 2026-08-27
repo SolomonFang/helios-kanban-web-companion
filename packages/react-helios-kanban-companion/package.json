@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "react-helios-kanban-companion",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Add point-and-click edit functionality to React apps, when used with Helios Kanban.",
   "exports": {
     "types": "./src/types.d.ts",

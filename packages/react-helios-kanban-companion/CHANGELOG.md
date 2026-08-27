@@ -1,5 +1,11 @@
 # click-to-react-component
 
+## 2.0.0
+
+### Major Changes
+
+- update import
+
 ## 1.0.0
 
 ### Major Changes
