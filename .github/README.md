@@ -1,1 +1,0 @@
-../packages/vibe-kanban-web-companion/README.md
