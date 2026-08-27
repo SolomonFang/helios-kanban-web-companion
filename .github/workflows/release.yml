@@ -7,6 +7,10 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write # push the changeset-release/main branch and tags
+  pull-requests: write # open the "Version Packages" PR
+
 jobs:
   release:
     name: Release
