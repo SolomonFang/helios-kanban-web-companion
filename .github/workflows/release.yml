@@ -39,6 +39,9 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          # Bump versions AND refresh pnpm-lock.yaml, otherwise the version PR
+          # fails CI on `pnpm install --frozen-lockfile`
+          version: pnpm exec changeset version && pnpm install --lockfile-only
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release
         env:
