@@ -44,6 +44,15 @@ The component renders nothing visible until the parent window (Helios Kanban)
 sends the `enable-button` message; hold <kbd>Alt</kbd> (<kbd>⌥ Option</kbd> on
 macOS) and click any element to locate its source component.
 
+### Selecting modules
+
+Targeting mode is entered either by holding <kbd>Alt</kbd>/<kbd>⌥ Option</kbd>
+or by clicking the floating HK button (shown after the `enable-button`
+message). While active, moving the mouse highlights the whole Vue **module**
+(component) under the cursor — the outline snaps to the component's root
+element, not to whichever inner DOM node the pointer touches. Clicking
+reports the highlighted module to the parent window.
+
 ## Notes
 
 - Vue 2 does not record line/column numbers for components, so `pathToSource`

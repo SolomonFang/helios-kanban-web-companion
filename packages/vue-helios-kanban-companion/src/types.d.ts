@@ -13,6 +13,7 @@ export type Source = {
 }
 
 export type VueInstance = {
+  $el?: unknown
   $options: {
     name?: string
     __file?: string

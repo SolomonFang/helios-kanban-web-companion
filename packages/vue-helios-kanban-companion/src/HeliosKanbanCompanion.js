@@ -170,9 +170,14 @@ export const HeliosKanbanCompanion = {
   },
 
   created() {
-    // Non-reactive on purpose: a DOM element must not be observed by Vue
+    // Non-reactive on purpose: DOM elements and Vue instances must not
+    // be observed by Vue
     /** @type {HTMLElement | null} */
     this.target = null
+    /** @type {HTMLElement | null} */
+    this.lastHovered = null
+    /** @type {Array<VueInstance>} */
+    this.targetChain = []
   },
 
   mounted() {
@@ -224,6 +229,10 @@ export const HeliosKanbanCompanion = {
       } else {
         this.state = State.HOVER
         this.trigger = Trigger.BUTTON
+        // The last hovered element is the button itself; wait for the
+        // next mousemove to resolve the module under the cursor
+        this.target = null
+        this.targetChain = []
       }
     },
 
@@ -337,6 +346,12 @@ export const HeliosKanbanCompanion = {
           if (event.altKey) {
             this.state = State.HOVER
             this.trigger = Trigger.ALT_KEY
+            // The cursor is already over some element; resolve its
+            // module chain so the highlight snaps to the module
+            if (this.target instanceof HTMLElement) {
+              this.resolveTargetChain(this.target)
+              this.target = this.resolveHighlightElement(this.target)
+            }
           }
           break
 
@@ -365,18 +380,67 @@ export const HeliosKanbanCompanion = {
       }
     },
 
+    /**
+     * Resolve the Vue module (component) chain for an element, innermost
+     * first. Only components with source info qualify as a module, and
+     * components sharing the same root element are deduplicated.
+     * @param {HTMLElement} element
+     */
+    resolveTargetChain(element) {
+      const seen = new Set()
+      this.targetChain = getVueInstancesForElement(element)
+        .filter((instance) => getSourceForInstance(instance))
+        .filter((instance) => {
+          const el = instance.$el
+          if (!(el instanceof HTMLElement) || seen.has(el)) return false
+          seen.add(el)
+          return true
+        })
+    },
+
+    /**
+     * Element to highlight: the root element of the innermost module under
+     * the cursor, or the raw hovered element when no module was resolved.
+     * @param {HTMLElement} hovered
+     * @returns {HTMLElement}
+     */
+    resolveHighlightElement(hovered) {
+      const instance = this.targetChain[0]
+      const el = instance && instance.$el
+      return el instanceof HTMLElement ? el : hovered
+    },
+
     /** @param {MouseEvent} event */
     onMouseMove(event) {
       if (!(event.target instanceof HTMLElement)) {
         return
       }
 
+      const hovered = event.target
+
       switch (this.state) {
         case State.IDLE:
-        case State.HOVER:
-          this.target = event.target
-          this.applyIndicator()
+          this.target = hovered
+          this.lastHovered = hovered
+          this.targetChain = []
           break
+
+        case State.HOVER: {
+          // The innermost module is a pure function of the hovered element,
+          // so only re-resolve when the element under the cursor changes
+          if (hovered === this.lastHovered) {
+            break
+          }
+          this.lastHovered = hovered
+
+          this.resolveTargetChain(hovered)
+          const el = this.resolveHighlightElement(hovered)
+          if (el !== this.target) {
+            this.target = el
+            this.applyIndicator()
+          }
+          break
+        }
 
         default:
           break
